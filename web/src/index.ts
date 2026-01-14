@@ -112,11 +112,20 @@ const bootstrap = async () => {
     updateStats();
   };
 
-  // const randomize = () => {
-  //   world randomize();
-  //   generation = 0;
-  //   updateStats();
-  // };
+  const randomize = () => {
+    const randomAlive: Position[] = [];
+    for (let row = 0; row < height; row += 1) {
+      for (let col = 0; col < width; col += 1) {
+        if (Math.random() < 0.3) {
+          randomAlive.push(toPosition(row, col));
+        }
+      }
+    }
+
+    world = new World(width, height, randomAlive);
+    generation = 0;
+    updateStats();
+  };
 
   const clear = () => {
     world = new World(width, height, []);
@@ -192,10 +201,10 @@ const bootstrap = async () => {
     drawCells();
   });
 
-  // randomizeButton.addEventListener("click", () => {
-  //   randomize();
-  //   drawCells();
-  // });
+  randomizeButton.addEventListener("click", () => {
+    randomize();
+    drawCells();
+  });
 
   clearButton.addEventListener("click", () => {
     clear();
