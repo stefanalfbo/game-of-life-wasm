@@ -1,4 +1,4 @@
-import init, { Position, World, glider_pattern } from "game-of-life-wasm";
+import init, { Position, World, glider_pattern, pulsar_pattern } from "game-of-life-wasm";
 
 const bootstrap = async () => {
   await init();
@@ -12,6 +12,7 @@ const bootstrap = async () => {
   const stepButton = document.getElementById("step") as HTMLButtonElement | null;
   const randomizeButton = document.getElementById("randomize") as HTMLButtonElement | null;
   const gliderButton = document.getElementById("glider") as HTMLButtonElement | null;
+  const pulsarButton = document.getElementById("pulsar") as HTMLButtonElement | null;
   const clearButton = document.getElementById("clear") as HTMLButtonElement | null;
   const speedInput = document.getElementById("speed") as HTMLInputElement | null;
   const toggleGridInput = document.getElementById("toggle-grid") as HTMLInputElement | null;
@@ -24,6 +25,7 @@ const bootstrap = async () => {
     !stepButton ||
     !randomizeButton ||
     !gliderButton ||
+    !pulsarButton ||
     !clearButton ||
     !speedInput ||
     !toggleGridInput ||
@@ -210,6 +212,13 @@ const bootstrap = async () => {
 
   gliderButton.addEventListener("click", () => {
     world = glider_pattern(width, height);
+    generation = 0;
+    updateStats();
+    drawCells();
+  });
+
+  pulsarButton.addEventListener("click", () => {
+    world = pulsar_pattern(width, height);
     generation = 0;
     updateStats();
     drawCells();

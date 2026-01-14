@@ -153,6 +153,42 @@ pub fn glider_pattern(width: u32, height: u32) -> World {
     World::new(width, height, glider)
 }
 
+#[wasm_bindgen]
+pub fn pulsar_pattern(width: u32, height: u32) -> World {
+    if width < 15 || height < 15 {
+        panic!("World must be at least 15x15 to fit a pulsar pattern.");
+    }
+
+    let pulsar = vec![
+        Position::new(7, 4),
+        Position::new(8, 4),
+        Position::new(9, 4),
+        Position::new(13, 4),
+        Position::new(14, 4),
+        Position::new(15, 4),
+        Position::new(5, 6),
+        Position::new(10, 6),
+        Position::new(12, 6),
+        Position::new(17, 6),
+        Position::new(5, 7),
+        Position::new(10, 7),
+        Position::new(12, 7),
+        Position::new(17, 7),
+        Position::new(5, 8),
+        Position::new(10, 8),
+        Position::new(12, 8),
+        Position::new(17, 8),
+        Position::new(7, 10),
+        Position::new(8, 10),
+        Position::new(9, 10),
+        Position::new(13, 10),
+        Position::new(14, 10),
+        Position::new(15, 10),
+    ];
+
+    World::new(width, height, pulsar)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
