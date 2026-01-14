@@ -11,6 +11,7 @@ const bootstrap = async () => {
   const playPauseButton = document.getElementById("play-pause") as HTMLButtonElement | null;
   const stepButton = document.getElementById("step") as HTMLButtonElement | null;
   const randomizeButton = document.getElementById("randomize") as HTMLButtonElement | null;
+  const gliderButton = document.getElementById("glider") as HTMLButtonElement | null;
   const clearButton = document.getElementById("clear") as HTMLButtonElement | null;
   const speedInput = document.getElementById("speed") as HTMLInputElement | null;
   const toggleGridInput = document.getElementById("toggle-grid") as HTMLInputElement | null;
@@ -22,6 +23,7 @@ const bootstrap = async () => {
     !playPauseButton ||
     !stepButton ||
     !randomizeButton ||
+    !gliderButton ||
     !clearButton ||
     !speedInput ||
     !toggleGridInput ||
@@ -203,6 +205,13 @@ const bootstrap = async () => {
 
   randomizeButton.addEventListener("click", () => {
     randomize();
+    drawCells();
+  });
+
+  gliderButton.addEventListener("click", () => {
+    world = glider_pattern(width, height);
+    generation = 0;
+    updateStats();
     drawCells();
   });
 
