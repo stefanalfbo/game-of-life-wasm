@@ -124,6 +124,16 @@ impl World {
             alive: new_alive,
         }
     }
+
+    pub fn alive_positions(&self) -> Vec<Position> {
+        self.alive.clone()
+    }
+
+    pub fn tick(&mut self) {
+        let next = self.next_generation();
+
+        self.alive = next.alive;
+    }
 }
 
 #[wasm_bindgen]
