@@ -1,0 +1,13 @@
+[package]
+name = "game-of-life-wasm"
+version = "0.1.0"
+edition = "2024"
+description = "A small Rust + WebAssembly project that implements Conway's Game of Life in the browser."
+repository = "https://github.com/stefanalfbo/game-of-life-wasm"
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = "0.2"
