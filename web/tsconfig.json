@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "target": "ES2020",
+        "module": "ESNext",
+        "moduleResolution": "Node",
+        "lib": [
+            "DOM",
+            "ES2020"
+        ],
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "sourceMap": true,
+        "baseUrl": ".",
+        "paths": {
+            "game-of-life-wasm": [
+                "../pkg/game_of_life_wasm.d.ts"
+            ]
+        }
+    },
+    "include": [
+        "src/**/*.ts"
+    ]
+}

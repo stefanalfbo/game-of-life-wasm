@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Game of Life (WASM)</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+
+    <style>
+        :root {
+            --bg: #0f1115;
+            --bg-alt: #151a23;
+            --panel: #1e2533;
+            --panel-strong: #2a3345;
+            --text: #e9edf3;
+            --muted: #aab4c5;
+            --accent: #ffb000;
+            --accent-2: #5ce0a6;
+            --shadow: rgba(15, 17, 21, 0.45);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Space Grotesk", "Segoe UI", sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 20% 20%, rgba(92, 224, 166, 0.15), transparent 55%),
+                radial-gradient(circle at 80% 10%, rgba(255, 176, 0, 0.22), transparent 50%),
+                linear-gradient(140deg, #0b0d12 10%, #121722 55%, #0f1115 100%);
+            min-height: 100vh;
+        }
+
+        .page {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 32px 20px 48px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        .hero {
+            display: grid;
+            gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            align-items: center;
+            background: var(--panel);
+            border-radius: 22px;
+            padding: 26px 28px;
+            box-shadow: 0 24px 48px var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .eyebrow {
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-size: 11px;
+            color: var(--accent-2);
+            margin: 0 0 8px;
+        }
+
+        h1 {
+            font-size: clamp(28px, 4vw, 42px);
+            margin: 0 0 10px;
+        }
+
+        .subtitle {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .meta {
+            display: grid;
+            gap: 12px;
+        }
+
+        .stat {
+            background: var(--panel-strong);
+            border-radius: 16px;
+            padding: 14px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .stat .label {
+            color: var(--muted);
+        }
+
+        .stat .value {
+            font-weight: 600;
+        }
+
+        .stage {
+            display: grid;
+            gap: 24px;
+            grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
+            align-items: start;
+        }
+
+        .controls {
+            background: var(--panel);
+            border-radius: 22px;
+            padding: 20px;
+            display: grid;
+            gap: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .controls h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .control-row {
+            display: grid;
+            gap: 10px;
+        }
+
+        button {
+            border: none;
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            background: var(--accent);
+            color: #1b1b1b;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        button.secondary {
+            background: #343e52;
+            color: var(--text);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        label {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        input[type="range"],
+        select {
+            width: 100%;
+            margin-top: 8px;
+            accent-color: var(--accent);
+            background: var(--panel-strong);
+        }
+
+        .toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--panel-strong);
+            border-radius: 12px;
+            padding: 10px 12px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .board {
+            background: var(--panel);
+            border-radius: 22px;
+            padding: 20px;
+            display: grid;
+            gap: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        canvas {
+            width: 100%;
+            height: auto;
+            background: #0c0f16;
+            border-radius: 16px;
+            display: block;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .legend {
+            font-size: 13px;
+            color: var(--muted);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        footer {
+            color: var(--muted);
+            font-size: 13px;
+            text-align: center;
+        }
+
+        @media (max-width: 900px) {
+            .stage {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <header class="hero">
+            <div>
+                <p class="eyebrow">Rust + WebAssembly</p>
+                <h1>Conway's Game of Life</h1>
+                <p class="subtitle">
+                    A cellular automaton playground compiled to WebAssembly.
+                    Sketch patterns, tune the speed, and watch emergent behavior unfold.
+                </p>
+            </div>
+            <div class="meta">
+                <div class="stat">
+                    <span class="label">Universe</span>
+                    <span class="value" id="grid-size">64 x 64</span>
+                </div>
+                <div class="stat">
+                    <span class="label">Generation</span>
+                    <span class="value" id="generation">0</span>
+                </div>
+                <div class="stat">
+                    <span class="label">FPS</span>
+                    <span class="value" id="fps">0</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="stage">
+            <section class="controls">
+                <h2>Controls</h2>
+
+                <div class="control-row">
+                    <button id="play-pause">Play</button>
+                    <button class="secondary" id="step">Step</button>
+                </div>
+
+                <div class="control-row">
+                    <button class="secondary" id="randomize" disabled>Randomize</button>
+                    <button class="secondary" id="clear">Clear</button>
+                </div>
+
+                <label for="speed">Speed</label>
+                <input id="speed" type="range" min="1" max="60" value="12" />
+
+                <div class="toggle">
+                    <span>Show grid lines</span>
+                    <input id="toggle-grid" type="checkbox" checked />
+                </div>
+            </section>
+
+            <section class="board">
+                <canvas id="game-of-life-canvas" width="640" height="640"></canvas>
+            </section>
+        </main>
+    </div>
+</body>
+
+</html>
