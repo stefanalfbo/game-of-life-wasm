@@ -38,3 +38,19 @@ npm run build
 ```
 
 The compiled assets are emitted to `web/dist`.
+
+## Build Rust docs
+
+Generate the Rust API documentation locally:
+
+```bash
+cargo doc --no-deps --open
+```
+
+This builds the docs (by default in `target/doc`) and opens them in your browser.
+
+To build docs for the WebAssembly target specifically:
+
+```bash
+cargo doc --target wasm32-unknown-unknown --no-deps
+```
